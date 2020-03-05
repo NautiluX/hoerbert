@@ -45,7 +45,7 @@ func main() {
 		os.MkdirAll(outDir, 0777)
 	}
 
-	fmt.Println("Reading files from " + inDir)
+	log.Println("Reading files from " + inDir)
 
 	err := filepath.Walk(inDir, func(path string, info os.FileInfo, err error) error {
 		if filepath.Ext(path) == ".mp3" || filepath.Ext(path) == ".MP3" {
@@ -61,7 +61,7 @@ func main() {
 
 	currentPlaylist := startPlaylist
 	currentTrack := 0
-	fmt.Printf("Writing %d files to %s, %d tracks per button. Remaining %d files distributed amongst the first buttons.\n", len(files), outDir, playlistTrackCount, remainder)
+	log.Printf("Writing %d files to %s, %d tracks per button. Remaining %d files distributed amongst the first buttons.\n", len(files), outDir, playlistTrackCount, remainder)
 	for _, srcFile := range files {
 		trackCountCurrentPlaylist := playlistTrackCount
 		if currentPlaylist < startPlaylist+remainder {
@@ -73,7 +73,7 @@ func main() {
 			os.MkdirAll(filepath.Join(outDir, strconv.Itoa(currentPlaylist)), 0777)
 		}
 
-		fmt.Printf("converting %s to %s\n", srcFile, dstFile)
+		log.Printf("converting %s to %s\n", srcFile, dstFile)
 		cmd := exec.Command("sox", "--buffer", "131072", "--multi-threaded", "--no-glob", srcFile, "--clobber", "-r", "32000", "-b", "16", "-e", "signed-integer", "--no-glob", dstFile,
 			"remix", "-",
 			"gain", "-n", "-1.5",
@@ -95,9 +95,9 @@ func main() {
 
 		if verbose {
 			slurpstderr, _ := ioutil.ReadAll(stderr)
-			fmt.Printf("STDERR:\n %s\n", slurpstderr)
+			log.Printf("STDERR:\n %s\n", slurpstderr)
 			slurpstdout, _ := ioutil.ReadAll(stdout)
-			fmt.Printf("STDOUT:\n %s\n", slurpstdout)
+			log.Printf("STDOUT:\n %s\n", slurpstdout)
 		}
 		if err := cmd.Wait(); err != nil {
 			log.Printf("Convertion finished with error: %v", err)
