@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -48,7 +49,7 @@ func main() {
 	log.Println("Reading files from " + inDir)
 
 	err := filepath.Walk(inDir, func(path string, info os.FileInfo, err error) error {
-		if filepath.Ext(path) == ".mp3" || filepath.Ext(path) == ".MP3" {
+		if strings.ToLower(filepath.Ext(path)) == ".mp3" || strings.ToLower(filepath.Ext(path)) == ".ogg" {
 			files = append(files, path)
 		}
 		return nil
